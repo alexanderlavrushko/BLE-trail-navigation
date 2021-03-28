@@ -13,6 +13,10 @@
 		AB05F59D26112EAD007855E8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB05F59B26112EAD007855E8 /* Main.storyboard */; };
 		AB05F59F26112EAF007855E8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB05F59E26112EAF007855E8 /* Assets.xcassets */; };
 		AB05F5A226112EAF007855E8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB05F5A026112EAF007855E8 /* LaunchScreen.storyboard */; };
+		AB05F5B82611311C007855E8 /* BLEBikeAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB05F5B52611311C007855E8 /* BLEBikeAccessory.swift */; };
+		AB05F5B92611311C007855E8 /* BLEBikeEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB05F5B62611311C007855E8 /* BLEBikeEnums.swift */; };
+		AB05F5BA2611311C007855E8 /* BLEBikeDataEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB05F5B72611311C007855E8 /* BLEBikeDataEncoder.swift */; };
+		AB05F5C226113E02007855E8 /* BLEBikeDataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB05F5C126113E02007855E8 /* BLEBikeDataTypes.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +28,10 @@
 		AB05F59E26112EAF007855E8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AB05F5A126112EAF007855E8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AB05F5A326112EAF007855E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AB05F5B52611311C007855E8 /* BLEBikeAccessory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BLEBikeAccessory.swift; sourceTree = "<group>"; };
+		AB05F5B62611311C007855E8 /* BLEBikeEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BLEBikeEnums.swift; sourceTree = "<group>"; };
+		AB05F5B72611311C007855E8 /* BLEBikeDataEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BLEBikeDataEncoder.swift; sourceTree = "<group>"; };
+		AB05F5C126113E02007855E8 /* BLEBikeDataTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEBikeDataTypes.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +64,10 @@
 		AB05F59426112EAD007855E8 /* BLEBikeNavi */ = {
 			isa = PBXGroup;
 			children = (
+				AB05F5B52611311C007855E8 /* BLEBikeAccessory.swift */,
+				AB05F5B72611311C007855E8 /* BLEBikeDataEncoder.swift */,
+				AB05F5C126113E02007855E8 /* BLEBikeDataTypes.swift */,
+				AB05F5B62611311C007855E8 /* BLEBikeEnums.swift */,
 				AB05F59526112EAD007855E8 /* AppDelegate.swift */,
 				AB05F59726112EAD007855E8 /* SceneDelegate.swift */,
 				AB05F59926112EAD007855E8 /* ViewController.swift */,
@@ -139,7 +151,11 @@
 			files = (
 				AB05F59A26112EAD007855E8 /* ViewController.swift in Sources */,
 				AB05F59626112EAD007855E8 /* AppDelegate.swift in Sources */,
+				AB05F5C226113E02007855E8 /* BLEBikeDataTypes.swift in Sources */,
 				AB05F59826112EAD007855E8 /* SceneDelegate.swift in Sources */,
+				AB05F5B92611311C007855E8 /* BLEBikeEnums.swift in Sources */,
+				AB05F5B82611311C007855E8 /* BLEBikeAccessory.swift in Sources */,
+				AB05F5BA2611311C007855E8 /* BLEBikeDataEncoder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,7 +232,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -271,7 +287,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
