@@ -11,11 +11,25 @@ import CoreBluetooth
 
 protocol BLEBikeDelegate: AnyObject {
     func stateDidChange(_ newState: BLEBikeAccessoryState)
+    func updateRequested()
 }
 
 class BLEBikeAccessory: NSObject {
     private(set) static var instance: BLEBikeAccessory?
-    weak var delegate: BLEBikeDelegate?
+    public weak var delegate: BLEBikeDelegate?
+
+    @Atomic public private(set) var state = BLEBikeAccessoryState.bluetoothNotReady {
+        didSet {
+            guard state != oldValue else { return }
+            log("accessory state = \(state.humanReadableString)")
+            if delegate != nil {
+                let newState = state
+                DispatchQueue.main.async {
+                    self.delegate?.stateDidChange(newState)
+                }
+            }
+        }
+    }
 
     // private properties
     private let uuidService = CBUUID(string: "1E6387F0-BE8C-40DA-8F76-8ED84C42065D")
@@ -28,20 +42,8 @@ class BLEBikeAccessory: NSObject {
     private var connectedPeripheral: CBPeripheral?
 
     private var encoder = BLEBikeDataEncoder()
-    private var latestData = Data()
-
-    private var state = BLEBikeAccessoryState.bluetoothNotReady {
-        didSet {
-            guard state != oldValue else { return }
-            log("accessory state = \(state.humanReadableString)")
-            if delegate != nil {
-                let newState = state
-                DispatchQueue.main.async {
-                    self.delegate?.stateDidChange(newState)
-                }
-            }
-        }
-    }
+    private var currentData = Data()
+    private var lastData = Data()
 
     // methods
     override private init() {
@@ -64,23 +66,37 @@ class BLEBikeAccessory: NSObject {
         BLEBikeAccessory.instance = nil
     }
 
-    public func getState(withCompletion completion: @escaping (BLEBikeAccessoryState) -> Void) {
-        serialQueue.async {
-            let currentState = self.state
-            DispatchQueue.main.async {
-                completion(currentState)
-            }
+    public func newFrame(color: BikeColor) {
+        let command = encoder.buildNewFrame(color: color)
+        currentData = command
+    }
+
+    public func showCurrentFrame() {
+        let command = encoder.buildShowFrame()
+        currentData.append(command)
+        if currentData != lastData {
+            writeProperty(uuid: uuidCharWriteData, data: currentData)
         }
     }
 
-    public func fillScreen(color: BikeColor) {
-        let data = encoder.buildFillScreen(color: color)
-        writeProperty(uuid: uuidCharWriteData, data: data)
+    public func drawLine(from: BikePoint, to: BikePoint, color: BikeColor, width: UInt8) {
+        let command = encoder.buildDrawLine(from: from, to: to, color: color, width: width)
+        currentData.append(command)
     }
 
-    public func drawLine(from: BikePoint, to: BikePoint, color: BikeColor, width: UInt8) {
-        let data = encoder.buildDrawLine(from: from, to: to, color: color, width: width)
-        writeProperty(uuid: uuidCharWriteData, data: data)
+    public func drawCircle(center: BikePoint, radius: UInt8, color: BikeColor) {
+        let command = encoder.buildDrawCircle(center: center, radius: radius, color: color)
+        currentData.append(command)
+    }
+
+    public func fillCircle(center: BikePoint, radius: UInt8, color: BikeColor) {
+        let command = encoder.buildFillCircle(center: center, radius: radius, color: color)
+        currentData.append(command)
+    }
+
+    public func fillTriangle(_ p1: BikePoint, _ p2: BikePoint, _ p3: BikePoint, color: BikeColor) {
+        let command = encoder.buildFillTriangle(p1, p2, p3, color: color)
+        currentData.append(command)
     }
 }
 
@@ -100,6 +116,7 @@ private extension BLEBikeAccessory {
 
     func handleConnectionSetupFinished() {
         state = .connected
+        lastData = Data()
     }
 
     func readProperty(uuid: CBUUID) {
@@ -216,15 +233,18 @@ extension BLEBikeAccessory: CBPeripheralDelegate {
             return
         }
 
-//        if characteristic.uuid == uuidCharIndicateRequest {
-//            serialQueue.async {
-//            }
-//        }
+        if characteristic.uuid == uuidCharIndicateRequest {
+            DispatchQueue.main.async {
+                self.delegate?.updateRequested()
+            }
+        }
     }
 
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
         if let error = error {
             log("ERROR: didWriteValueFor: \(String(describing: error))")
+        } else {
+            lastData = currentData
         }
     }
 

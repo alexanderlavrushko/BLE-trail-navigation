@@ -8,8 +8,12 @@
 import Foundation
 
 enum BLEBikeCommand: UInt8 {
-    case fillScreen = 1
-    case drawLine = 2
+    case newFrameWithColor = 1
+    case showCurrentFrame = 2
+    case drawLine = 3
+    case drawCircle = 4
+    case fillCircle = 5
+    case fillTriangle = 6
 
     var data: Data {
         Data([self.rawValue])
@@ -17,15 +21,20 @@ enum BLEBikeCommand: UInt8 {
 }
 
 struct BikePoint {
-    var x = UInt8(0)
-    var y = UInt8(0)
-    init(x: UInt8, y: UInt8) {
+    var x = Int16(0)
+    var y = Int16(0)
+
+    init(x: Int16, y: Int16) {
         self.x = x
         self.y = y
     }
 
     var data: Data {
-        Data([x, y])
+        var x = self.x
+        var data = Data(bytes: &x, count: MemoryLayout<Int16>.size)
+        var y = self.y
+        data.append(Data(bytes: &y, count: MemoryLayout<Int16>.size))
+        return data
     }
 }
 

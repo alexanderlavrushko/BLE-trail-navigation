@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -16,57 +17,115 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bKg-Fh-GxI">
-                                <rect key="frame" x="162.5" y="97" width="89" height="30"/>
-                                <state key="normal" title="START/STOP"/>
-                                <connections>
-                                    <action selector="onTapStartStop:" destination="BYZ-38-t0r" eventType="touchUpInside" id="T6t-Is-ohr"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VIg-G3-e7N">
-                                <rect key="frame" x="186" y="68" width="42" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z0A-sb-RiF">
-                                <rect key="frame" x="189" y="184" width="36" height="30"/>
-                                <state key="normal" title="Clear"/>
-                                <connections>
-                                    <action selector="onTapClear:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wtm-Th-VY6"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gwN-43-h8S">
-                                <rect key="frame" x="189" y="239" width="36" height="30"/>
-                                <state key="normal" title="Test1"/>
-                                <connections>
-                                    <action selector="onTapTest1:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Wke-T2-5vz"/>
-                                </connections>
-                            </button>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="yiB-km-kCm">
+                                <rect key="frame" x="0.0" y="44" width="414" height="852"/>
+                            </mapView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="fk3-SU-a0k">
+                                <rect key="frame" x="350" y="606" width="56" height="248"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FtE-7J-5AV">
+                                        <rect key="frame" x="0.0" y="0.0" width="56" height="56"/>
+                                        <color key="backgroundColor" red="0.57414853570000002" green="0.57416242360000003" blue="0.57415497299999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="FtE-7J-5AV" secondAttribute="height" multiplier="1:1" id="Sbl-F8-tPu"/>
+                                        </constraints>
+                                        <color key="tintColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <state key="normal" title="Add pt"/>
+                                        <connections>
+                                            <action selector="onTapAddPoint:" destination="BYZ-38-t0r" eventType="touchUpInside" id="n4p-Lx-KDa"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bXW-yl-2VZ">
+                                        <rect key="frame" x="0.0" y="64" width="56" height="56"/>
+                                        <color key="backgroundColor" red="0.57414853570000002" green="0.57416242360000003" blue="0.57415497299999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="bXW-yl-2VZ" secondAttribute="height" multiplier="1:1" id="u29-aC-vcY"/>
+                                        </constraints>
+                                        <color key="tintColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <state key="normal" title="Del pt"/>
+                                        <connections>
+                                            <action selector="onTapDeletePoint:" destination="BYZ-38-t0r" eventType="touchUpInside" id="CkI-qe-Evq"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SBd-9d-V6t">
+                                        <rect key="frame" x="0.0" y="128" width="56" height="56"/>
+                                        <color key="backgroundColor" red="0.57414853570000002" green="0.57416242360000003" blue="0.57415497299999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="SBd-9d-V6t" secondAttribute="height" multiplier="1:1" id="t8z-kY-vD6"/>
+                                        </constraints>
+                                        <color key="tintColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <state key="normal" image="location" catalog="system"/>
+                                        <connections>
+                                            <action selector="onTapRecenter:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7FW-Fn-tOx"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xT3-Wr-zek">
+                                        <rect key="frame" x="0.0" y="192" width="56" height="56"/>
+                                        <color key="backgroundColor" red="0.57414853570000002" green="0.57416242360000003" blue="0.57415497299999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="56" id="gCm-Vi-lNo"/>
+                                            <constraint firstAttribute="height" constant="56" id="ziF-nD-IcL"/>
+                                        </constraints>
+                                        <color key="tintColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <state key="normal" image="line.horizontal.3" catalog="system"/>
+                                        <connections>
+                                            <action selector="onTapMenu:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ZI8-Vd-K5N"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="bXW-yl-2VZ" firstAttribute="width" secondItem="xT3-Wr-zek" secondAttribute="width" id="dGm-Uh-1Xt"/>
+                                    <constraint firstItem="FtE-7J-5AV" firstAttribute="width" secondItem="xT3-Wr-zek" secondAttribute="width" id="uKA-VH-T2W"/>
+                                    <constraint firstItem="SBd-9d-V6t" firstAttribute="width" secondItem="xT3-Wr-zek" secondAttribute="width" id="z5H-cS-AV1"/>
+                                </constraints>
+                            </stackView>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dM8-lW-J0C" customClass="BikeSimulationView" customModule="BLEBikeNavi" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="734" width="128" height="128"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="128" id="DJ1-C7-uvG"/>
+                                    <constraint firstAttribute="width" constant="128" id="mFD-GE-Xf7"/>
+                                </constraints>
+                            </view>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="crosshair.png" translatesAutoresizingMaskIntoConstraints="NO" id="bf9-N8-l9z">
+                                <rect key="frame" x="193" y="456" width="28" height="28"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="bf9-N8-l9z" secondAttribute="height" multiplier="1:1" id="9PO-NS-6v2"/>
+                                    <constraint firstAttribute="width" constant="28" id="UsY-jj-civ"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="z0A-sb-RiF" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="2rw-w9-bMA"/>
-                            <constraint firstItem="VIg-G3-e7N" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="24" id="FZs-iG-CSX"/>
-                            <constraint firstItem="z0A-sb-RiF" firstAttribute="top" secondItem="bKg-Fh-GxI" secondAttribute="bottom" constant="57" id="JH9-Zn-9NO"/>
-                            <constraint firstItem="gwN-43-h8S" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="RmV-jY-mQU"/>
-                            <constraint firstItem="VIg-G3-e7N" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="oRs-fS-tnM"/>
-                            <constraint firstItem="bKg-Fh-GxI" firstAttribute="top" secondItem="VIg-G3-e7N" secondAttribute="bottom" constant="8" symbolic="YES" id="peU-9r-hWG"/>
-                            <constraint firstItem="gwN-43-h8S" firstAttribute="top" secondItem="z0A-sb-RiF" secondAttribute="bottom" constant="25" id="sD5-IN-rDW"/>
-                            <constraint firstItem="bKg-Fh-GxI" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="vh1-LK-Hp0"/>
+                            <constraint firstItem="dM8-lW-J0C" firstAttribute="leading" secondItem="yiB-km-kCm" secondAttribute="leading" id="1Z1-IY-lzm"/>
+                            <constraint firstItem="bf9-N8-l9z" firstAttribute="centerY" secondItem="yiB-km-kCm" secondAttribute="centerY" id="7RU-6O-ChF"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="dM8-lW-J0C" secondAttribute="bottom" id="7yz-US-Ul8"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="fk3-SU-a0k" secondAttribute="trailing" constant="8" id="PX5-eU-Ix3"/>
+                            <constraint firstItem="yiB-km-kCm" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="QgI-XD-iHo"/>
+                            <constraint firstAttribute="bottom" secondItem="yiB-km-kCm" secondAttribute="bottom" id="W5P-cf-zVN"/>
+                            <constraint firstItem="yiB-km-kCm" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="Yj4-st-lRX"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="fk3-SU-a0k" secondAttribute="bottom" constant="8" id="dpG-4L-mWU"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="yiB-km-kCm" secondAttribute="trailing" id="fDY-aB-xgd"/>
+                            <constraint firstItem="bf9-N8-l9z" firstAttribute="centerX" secondItem="yiB-km-kCm" secondAttribute="centerX" id="gVV-m1-ZNO"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="statusLabel" destination="VIg-G3-e7N" id="28q-K7-xAJ"/>
+                        <outlet property="bikeView" destination="dM8-lW-J0C" id="CSO-Tf-FSI"/>
+                        <outlet property="buttonRecenter" destination="SBd-9d-V6t" id="J81-1i-luz"/>
+                        <outlet property="crosshairView" destination="bf9-N8-l9z" id="8B5-DZ-0eJ"/>
+                        <outlet property="mapView" destination="yiB-km-kCm" id="hWP-QB-DU9"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-223" y="94"/>
+            <point key="canvasLocation" x="-223.18840579710147" y="93.75"/>
         </scene>
     </scenes>
     <resources>
+        <image name="crosshair.png" width="28" height="28"/>
+        <image name="line.horizontal.3" catalog="system" width="128" height="64"/>
+        <image name="location" catalog="system" width="128" height="121"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

@@ -17,6 +17,15 @@
 		AB05F5B92611311C007855E8 /* BLEBikeEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB05F5B62611311C007855E8 /* BLEBikeEnums.swift */; };
 		AB05F5BA2611311C007855E8 /* BLEBikeDataEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB05F5B72611311C007855E8 /* BLEBikeDataEncoder.swift */; };
 		AB05F5C226113E02007855E8 /* BLEBikeDataTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB05F5C126113E02007855E8 /* BLEBikeDataTypes.swift */; };
+		AB1513402612946B00B21688 /* MyTileOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB15133F2612946B00B21688 /* MyTileOverlay.swift */; };
+		AB24B688263ED4F000B91E9E /* MainMenuTableController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB24B687263ED4F000B91E9E /* MainMenuTableController.swift */; };
+		AB4254D9261B27C700989E64 /* CLLocationManager+Bike.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4254D8261B27C700989E64 /* CLLocationManager+Bike.swift */; };
+		AB4254DD261B556A00989E64 /* TaskScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4254DC261B556A00989E64 /* TaskScheduler.swift */; };
+		AB4254E2261BBE0E00989E64 /* BikeGeometryConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB4254E1261BBE0E00989E64 /* BikeGeometryConverter.swift */; };
+		AB66DF902617C98D0088C684 /* BikeSimulationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB66DF8F2617C98D0088C684 /* BikeSimulationView.swift */; };
+		AB92EC77263F55ED001FDC0B /* crosshair.png in Resources */ = {isa = PBXBuildFile; fileRef = AB92EC76263F55EC001FDC0B /* crosshair.png */; };
+		ABD16417263F2C1A00EB2F11 /* AtomicPropertyWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABD16416263F2C1A00EB2F11 /* AtomicPropertyWrapper.swift */; };
+		ABD1641B263F3FD500EB2F11 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABD1641A263F3FD500EB2F11 /* Settings.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +41,15 @@
 		AB05F5B62611311C007855E8 /* BLEBikeEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BLEBikeEnums.swift; sourceTree = "<group>"; };
 		AB05F5B72611311C007855E8 /* BLEBikeDataEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BLEBikeDataEncoder.swift; sourceTree = "<group>"; };
 		AB05F5C126113E02007855E8 /* BLEBikeDataTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEBikeDataTypes.swift; sourceTree = "<group>"; };
+		AB15133F2612946B00B21688 /* MyTileOverlay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyTileOverlay.swift; sourceTree = "<group>"; };
+		AB24B687263ED4F000B91E9E /* MainMenuTableController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuTableController.swift; sourceTree = "<group>"; };
+		AB4254D8261B27C700989E64 /* CLLocationManager+Bike.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLLocationManager+Bike.swift"; sourceTree = "<group>"; };
+		AB4254DC261B556A00989E64 /* TaskScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskScheduler.swift; sourceTree = "<group>"; };
+		AB4254E1261BBE0E00989E64 /* BikeGeometryConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BikeGeometryConverter.swift; sourceTree = "<group>"; };
+		AB66DF8F2617C98D0088C684 /* BikeSimulationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BikeSimulationView.swift; sourceTree = "<group>"; };
+		AB92EC76263F55EC001FDC0B /* crosshair.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = crosshair.png; sourceTree = "<group>"; };
+		ABD16416263F2C1A00EB2F11 /* AtomicPropertyWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AtomicPropertyWrapper.swift; sourceTree = "<group>"; };
+		ABD1641A263F3FD500EB2F11 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,13 +86,22 @@
 				AB05F5B72611311C007855E8 /* BLEBikeDataEncoder.swift */,
 				AB05F5C126113E02007855E8 /* BLEBikeDataTypes.swift */,
 				AB05F5B62611311C007855E8 /* BLEBikeEnums.swift */,
+				ABD16416263F2C1A00EB2F11 /* AtomicPropertyWrapper.swift */,
+				AB4254E1261BBE0E00989E64 /* BikeGeometryConverter.swift */,
+				AB66DF8F2617C98D0088C684 /* BikeSimulationView.swift */,
+				AB4254D8261B27C700989E64 /* CLLocationManager+Bike.swift */,
+				AB15133F2612946B00B21688 /* MyTileOverlay.swift */,
 				AB05F59526112EAD007855E8 /* AppDelegate.swift */,
 				AB05F59726112EAD007855E8 /* SceneDelegate.swift */,
 				AB05F59926112EAD007855E8 /* ViewController.swift */,
+				AB4254DC261B556A00989E64 /* TaskScheduler.swift */,
+				AB24B687263ED4F000B91E9E /* MainMenuTableController.swift */,
+				ABD1641A263F3FD500EB2F11 /* Settings.swift */,
 				AB05F59B26112EAD007855E8 /* Main.storyboard */,
 				AB05F59E26112EAF007855E8 /* Assets.xcassets */,
 				AB05F5A026112EAF007855E8 /* LaunchScreen.storyboard */,
 				AB05F5A326112EAF007855E8 /* Info.plist */,
+				AB92EC76263F55EC001FDC0B /* crosshair.png */,
 			);
 			path = BLEBikeNavi;
 			sourceTree = "<group>";
@@ -138,6 +165,7 @@
 			files = (
 				AB05F5A226112EAF007855E8 /* LaunchScreen.storyboard in Resources */,
 				AB05F59F26112EAF007855E8 /* Assets.xcassets in Resources */,
+				AB92EC77263F55ED001FDC0B /* crosshair.png in Resources */,
 				AB05F59D26112EAD007855E8 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -152,9 +180,17 @@
 				AB05F59A26112EAD007855E8 /* ViewController.swift in Sources */,
 				AB05F59626112EAD007855E8 /* AppDelegate.swift in Sources */,
 				AB05F5C226113E02007855E8 /* BLEBikeDataTypes.swift in Sources */,
+				AB4254D9261B27C700989E64 /* CLLocationManager+Bike.swift in Sources */,
 				AB05F59826112EAD007855E8 /* SceneDelegate.swift in Sources */,
+				AB1513402612946B00B21688 /* MyTileOverlay.swift in Sources */,
 				AB05F5B92611311C007855E8 /* BLEBikeEnums.swift in Sources */,
+				ABD16417263F2C1A00EB2F11 /* AtomicPropertyWrapper.swift in Sources */,
+				AB24B688263ED4F000B91E9E /* MainMenuTableController.swift in Sources */,
+				AB66DF902617C98D0088C684 /* BikeSimulationView.swift in Sources */,
+				ABD1641B263F3FD500EB2F11 /* Settings.swift in Sources */,
 				AB05F5B82611311C007855E8 /* BLEBikeAccessory.swift in Sources */,
+				AB4254E2261BBE0E00989E64 /* BikeGeometryConverter.swift in Sources */,
+				AB4254DD261B556A00989E64 /* TaskScheduler.swift in Sources */,
 				AB05F5BA2611311C007855E8 /* BLEBikeDataEncoder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

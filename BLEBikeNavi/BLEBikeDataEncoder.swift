@@ -8,8 +8,8 @@
 import Foundation
 
 class BLEBikeDataEncoder {
-    func buildFillScreen(color: BikeColor) -> Data {
-        var data = BLEBikeCommand.fillScreen.data
+    func buildNewFrame(color: BikeColor) -> Data {
+        var data = BLEBikeCommand.newFrameWithColor.data
         data.append(color.data)
         return data
     }
@@ -20,6 +20,35 @@ class BLEBikeDataEncoder {
         data.append(to.data)
         data.append(color.data)
         data.append(contentsOf: [width])
+        return data
+    }
+
+    func buildShowFrame() -> Data {
+        BLEBikeCommand.showCurrentFrame.data
+    }
+
+    func buildDrawCircle(center: BikePoint, radius: UInt8, color: BikeColor) -> Data {
+        var data = BLEBikeCommand.drawCircle.data
+        data.append(center.data)
+        data.append(contentsOf: [radius])
+        data.append(color.data)
+        return data
+    }
+
+    func buildFillCircle(center: BikePoint, radius: UInt8, color: BikeColor) -> Data {
+        var data = BLEBikeCommand.fillCircle.data
+        data.append(center.data)
+        data.append(contentsOf: [radius])
+        data.append(color.data)
+        return data
+    }
+
+    func buildFillTriangle(_ p1: BikePoint, _ p2: BikePoint, _ p3: BikePoint, color: BikeColor) -> Data {
+        var data = BLEBikeCommand.fillTriangle.data
+        data.append(p1.data)
+        data.append(p2.data)
+        data.append(p3.data)
+        data.append(color.data)
         return data
     }
 }
