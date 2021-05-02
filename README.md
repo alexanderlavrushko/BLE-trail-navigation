@@ -10,7 +10,7 @@ The application on the phone runs in background, tracks user location, filters t
 * The phone acts as BLE Central
 * ESP32 acts as BLE Peripheral
 
-Only iOS application is implemented so far.
+Only iOS is supported so far.
 
 Route editing is manual and very basic:
 * Every GPS point is added manually
