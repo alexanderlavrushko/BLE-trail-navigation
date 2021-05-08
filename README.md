@@ -10,8 +10,11 @@ The application on the phone runs in background, tracks user location, filters t
 * The phone acts as BLE Central
 * ESP32 acts as BLE Peripheral
 
+Application uses Apple MapKit with OpenStreetMap tiles.
+
 Only iOS is supported so far.
 
+## How to use
 Route editing is manual and very basic:
 * Every GPS point is added manually
 * For now, only one GPS polyline is supported
@@ -26,9 +29,9 @@ ESP32:
 ### Display OLED 128x128
 Display: Waveshare 14747 128x128 OLED RGB ([link](https://www.waveshare.com/1.5inch-rgb-oled-module.htm))
 
-Protocol: SSD1351
-
-This library is required for Arduino project: [Adafruit-SSD1351-library](https://github.com/adafruit/Adafruit-SSD1351-library).
+Required libraries for ESP32 Arduino project:
+* [Adafruit-GFX-Library](https://github.com/adafruit/Adafruit-GFX-Library)
+* [Adafruit-SSD1351-library](https://github.com/adafruit/Adafruit-SSD1351-library).
 
 Connected this way:
 ESP32 | Display WS14747
