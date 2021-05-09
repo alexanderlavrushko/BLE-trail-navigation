@@ -2,9 +2,25 @@
 #include <BLEUtils.h>
 #include <BLEServer.h>
 #include <BLE2902.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1351.h>
+#include <Adafruit_GFX.h> // available in Arduino libraries, or https://github.com/adafruit/Adafruit-GFX-Library
 #include <SPI.h>
+
+// -----------------
+// Display selection
+// Uncomment wanted display with corresponding header
+// -----------------
+
+// OLED 128x128 RGB, Waveshare 14747, driver SSD1351
+// Requires library Adafruit SSD1351, available in Arduino libraries, or https://github.com/adafruit/Adafruit-SSD1351-library
+// Pins: DIN=23, CLK=18, CS=5, DC=17, RST=16, uses SPIClass(VSPI)
+#include "OLED_SSD1351_Adafruit.h"
+OLED_SSD1351_Adafruit selectedDisplay;
+
+// TTGO T-Display TFT 135x240
+// Requires library TFT_eSPI from here: https://github.com/Xinyuan-LilyGO/TTGO-T-Display
+// (copy TFT_eSPI to Arduino/libraries)
+//#include "TFT_TTGO.h"
+//TFT_TTGO selectedDisplay;
 
 // --------
 // Constants
@@ -13,9 +29,6 @@
 #define CHAR_READ_STATE_UUID       "1E6387F1-BE8C-40DA-8F76-8ED84C42065D"
 #define CHAR_WRITE_DATA_UUID       "1E6387F2-BE8C-40DA-8F76-8ED84C42065D"
 #define CHAR_INDICATE_REQUEST_UUID "1E6387F3-BE8C-40DA-8F76-8ED84C42065D"
-
-#define SCREEN_WIDTH  128
-#define SCREEN_HEIGHT 128
 
 #define COLOR_BLACK    0x0000
 #define COLOR_BLUE     0x001F
@@ -27,23 +40,21 @@
 #define COLOR_WHITE    0xFFFF
 #define COLOR_GRAY     0x2084
 
-#define SCLK_PIN 18 // this value not used because it's a default SCLK pin for VSPI
-#define MOSI_PIN 23 // this value not used because it's a default MOSI pin for VSPI
-#define DC_PIN   17
-#define CS_PIN   5
-#define RST_PIN  16
+// ---------------------
+// Variables for display
+// ---------------------
+IDisplay& g_display = selectedDisplay;
+const int16_t CANVAS_WIDTH = g_display.GetWidth();
+const int16_t CANVAS_HEIGHT = g_display.GetHeight();
+static GFXcanvas16* g_pGfx = NULL;
 
 // --------
-// Global variables
+// Variables for BLE
 // --------
 static BLEServer* g_pServer = nullptr;
 static BLECharacteristic* g_pCharRead = nullptr;
 static BLECharacteristic* g_pCharWrite = nullptr;
 static BLECharacteristic* g_pCharIndicate = nullptr;
-
-static SPIClass* g_pSpi = NULL;
-static GFXcanvas16* g_pGfx = NULL;
-static Adafruit_SSD1351* g_pGfxSender = NULL;
 
 static bool g_centralConnected = false;
 static bool g_needToHandleConnectionState = true;
@@ -141,15 +152,8 @@ void setup()
     Serial.println("BLEBikeNavi setup() started");
 
     // init graphics
-    g_pSpi = new SPIClass(VSPI);
-    g_pSpi->begin();
-    g_pSpi->setHwCs(false);
-
-    g_pGfx = new GFXcanvas16(SCREEN_WIDTH, SCREEN_HEIGHT);
-
-    g_pGfxSender = new Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, g_pSpi, CS_PIN, DC_PIN, RST_PIN);
-    g_pGfxSender->begin();
-    g_pGfxSender->fillScreen(COLOR_BLACK);
+    g_pGfx = new GFXcanvas16(CANVAS_WIDTH, CANVAS_HEIGHT);
+    g_display.Init();
 
     // init BLE
     BLEDevice::init("Bike");
@@ -207,12 +211,12 @@ void loop()
         {
             g_needToHandleConnectionState = false;
 
-            g_pGfx->fillRect(0, 0, SCREEN_WIDTH, 10, COLOR_BLACK);
+            g_pGfx->fillRect(0, 0, CANVAS_WIDTH, 10, COLOR_BLACK);
             g_pGfx->setCursor(0, 0);
             g_pGfx->setTextColor(COLOR_GREEN);
             g_pGfx->setTextSize(1);
             g_pGfx->println("Connected");
-            g_pGfxSender->drawRGBBitmap(0, 0, g_pGfx->getBuffer(), SCREEN_WIDTH, SCREEN_HEIGHT);
+            g_display.SendImage(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, g_pGfx->getBuffer());
         }
 
         if (g_isWriteDataUpdated)
@@ -250,7 +254,7 @@ void loop()
                     {
                         const int RequiredSize = 1;
                         index += RequiredSize;
-                        g_pGfxSender->drawRGBBitmap(0, 0, g_pGfx->getBuffer(), SCREEN_WIDTH, SCREEN_HEIGHT);
+                        g_display.SendImage(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, g_pGfx->getBuffer());
                     }
                     else if (cmd == ECommand::DrawLine)
                     {
@@ -404,12 +408,12 @@ void loop()
         {
             g_needToHandleConnectionState = false;
 
-            g_pGfx->fillRect(0, 0, SCREEN_WIDTH, 10, COLOR_BLACK);
+            g_pGfx->fillRect(0, 0, CANVAS_WIDTH, 10, COLOR_BLACK);
             g_pGfx->setCursor(0, 0);
             g_pGfx->setTextColor(COLOR_YELLOW);
             g_pGfx->setTextSize(1);
             g_pGfx->println("Disconnected");
-            g_pGfxSender->drawRGBBitmap(0, 0, g_pGfx->getBuffer(), SCREEN_WIDTH, SCREEN_HEIGHT);
+            g_display.SendImage(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, g_pGfx->getBuffer());
         }
     }
     delay(10);
@@ -417,8 +421,8 @@ void loop()
 
 std::string BuildStateData()
 {
-    const uint8_t screenWidth{ SCREEN_WIDTH };
-    const uint8_t screenHeight{ SCREEN_HEIGHT };
+    const uint8_t screenWidth{ CANVAS_WIDTH };
+    const uint8_t screenHeight{ CANVAS_HEIGHT };
 
     const uint8_t bytes[] = { screenWidth, screenHeight };
 
