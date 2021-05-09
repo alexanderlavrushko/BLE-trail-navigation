@@ -51,4 +51,14 @@ class BLEBikeDataEncoder {
         data.append(color.data)
         return data
     }
+
+    func decodeBikeInfo(_ data: Data?) -> BikeInfo? {
+        guard let data = data else {
+            return nil
+        }
+        guard data.count >= 2 else {
+            return nil
+        }
+        return BikeInfo(screenWidth: Int16(data[0]), screenHeight: Int16(data[1]))
+    }
 }

@@ -311,9 +311,19 @@ private extension ViewController {
             }
         }()
 
-        let screenCenter = CGPoint(x: 63, y: 70)
-        let bike = BikeGeometryConverter(screenWidth: 128,
-                                         screenHeight: 128,
+        let bikeInfo = BLEBikeAccessory.instance?.info ?? BikeInfo(screenWidth: 128, screenHeight: 128)
+        let screenCenter = { () -> CGPoint in
+            if Double(bikeInfo.screenHeight) / Double(bikeInfo.screenWidth) > 1.3 {
+                return CGPoint(x: Int(bikeInfo.screenWidth / 2),
+                               y: Int(Double(bikeInfo.screenHeight) * 0.67))
+            } else {
+                let minSide = Double(min(bikeInfo.screenWidth, bikeInfo.screenHeight))
+                return CGPoint(x: Int(bikeInfo.screenWidth / 2),
+                               y: Int(Double(bikeInfo.screenHeight) - minSide * 0.45))
+            }
+        }()
+        let bike = BikeGeometryConverter(screenWidth: Double(bikeInfo.screenWidth),
+                                         screenHeight: Double(bikeInfo.screenHeight),
                                          metersPerPixel: metersPerPixel,
                                          screenCenter: screenCenter,
                                          mapCenter: bikeCenter,

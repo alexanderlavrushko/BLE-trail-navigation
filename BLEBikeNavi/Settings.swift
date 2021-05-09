@@ -90,7 +90,9 @@ class Settings {
     }
 
     func switchMetersPerPixel() {
-        if metersPerPixel == 1 {
+        if metersPerPixel == 0.67 {
+            metersPerPixel = 1
+        } else if metersPerPixel == 1 {
             metersPerPixel = 1.5
         } else if metersPerPixel == 1.5 {
             metersPerPixel = 2
@@ -99,7 +101,7 @@ class Settings {
         } else if metersPerPixel == 3 {
             metersPerPixel = 4
         } else {
-            metersPerPixel = 1
+            metersPerPixel = 0.67
         }
     }
 }

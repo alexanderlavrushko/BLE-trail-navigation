@@ -31,6 +31,8 @@ class BLEBikeAccessory: NSObject {
         }
     }
 
+    @Atomic public private(set) var info: BikeInfo?
+
     // private properties
     private let uuidService = CBUUID(string: "1E6387F0-BE8C-40DA-8F76-8ED84C42065D")
     private let uuidCharReadInfo = CBUUID(string: "1E6387F1-BE8C-40DA-8F76-8ED84C42065D")
@@ -224,7 +226,8 @@ extension BLEBikeAccessory: CBPeripheralDelegate {
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         log("didDiscoverCharacteristics \(error == nil ? "OK" : "error: \(String(describing: error))")")
-        setSubscription(true, uuid: uuidCharIndicateRequest)
+        info = nil
+        readProperty(uuid: uuidCharReadInfo)
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
@@ -233,7 +236,13 @@ extension BLEBikeAccessory: CBPeripheralDelegate {
             return
         }
 
-        if characteristic.uuid == uuidCharIndicateRequest {
+        if characteristic.uuid == uuidCharReadInfo {
+            if info == nil {
+                setSubscription(true, uuid: uuidCharIndicateRequest)
+            }
+            info = encoder.decodeBikeInfo(characteristic.value)
+        }
+        else if characteristic.uuid == uuidCharIndicateRequest {
             DispatchQueue.main.async {
                 self.delegate?.updateRequested()
             }

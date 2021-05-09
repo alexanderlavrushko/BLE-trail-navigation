@@ -58,3 +58,8 @@ struct BikeColor {
         return Data(bytes: &color565, count: MemoryLayout<UInt16>.size)
     }
 }
+
+struct BikeInfo {
+    let screenWidth: Int16
+    let screenHeight: Int16
+}
