@@ -8,11 +8,10 @@
 import Foundation
 import UIKit
 
-
 class MainMenuTableController: UITableViewController {
     private let sections =
         [MenuSection(section: .bluetooth, items: [.bleState, .bleStartStop]),
-         MenuSection(section: .displaySettings, items: [.settingZoom, .settingUpSource]),
+         MenuSection(section: .displaySettings, items: [.settingZoom, .settingLineWidthScale, .settingColorScheme, .settingUpSource]),
          MenuSection(section: .otherSettings, items: [.settingGpsSource])]
 
     override func viewDidLoad() {
@@ -104,6 +103,8 @@ private extension MainMenuTableController {
         case bleStartStop
         case settingZoom
         case settingUpSource
+        case settingColorScheme
+        case settingLineWidthScale
         case settingGpsSource
 
         var title: String {
@@ -116,6 +117,10 @@ private extension MainMenuTableController {
                 return "Meters per pixel"
             case .settingUpSource:
                 return "Display top"
+            case .settingColorScheme:
+                return "Color scheme"
+            case .settingLineWidthScale:
+                return "Line scale"
             case .settingGpsSource:
                 return "GPS source"
             }
@@ -163,6 +168,21 @@ private extension MainMenuTableController {
             case .headingUp:
                 return "Heading"
             }
+        case .settingColorScheme:
+            guard let colorScheme = Settings.instance?.colorScheme else {
+                return "Error"
+            }
+            switch colorScheme {
+            case .dark:
+                return "Dark"
+            case .light:
+                return "Light"
+            }
+        case .settingLineWidthScale:
+            guard let scale = Settings.instance?.lineWidthScale else {
+                return "Error"
+            }
+            return "\(scale)"
         case .settingGpsSource:
             guard let positionSource = Settings.instance?.positionSource else {
                 return "Error"
@@ -175,7 +195,7 @@ private extension MainMenuTableController {
             }
         }
     }
-    
+
     func handleTapOnMenuItem(_ item: MenuItem) {
         switch item {
         case .bleState:
@@ -191,15 +211,18 @@ private extension MainMenuTableController {
         case .settingZoom:
             Settings.instance?.switchMetersPerPixel()
             reloadSection(.displaySettings)
-            break
         case .settingUpSource:
             Settings.instance?.switchUpSource()
             reloadSection(.displaySettings)
-            break
+        case .settingColorScheme:
+            Settings.instance?.switchColorScheme()
+            reloadSection(.displaySettings)
+        case .settingLineWidthScale:
+            Settings.instance?.switchLineWidthScale()
+            reloadSection(.displaySettings)
         case .settingGpsSource:
             Settings.instance?.switchPositionSource()
             reloadSection(.otherSettings)
-            break
         }
     }
 }

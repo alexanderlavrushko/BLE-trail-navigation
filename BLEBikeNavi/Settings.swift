@@ -19,15 +19,18 @@ enum UpSource {
     case headingUp
 }
 
+enum ColorScheme {
+    case dark
+    case light
+}
+
 enum SimulatedAccuracy {
     case good
     case bad
 }
 
 protocol SettingsDelegate: AnyObject {
-    func didChangeMetersPerPixel(from oldValue: Double, to newValue: Double)
-    func didChangeUpSource(from oldValue: UpSource, to newValue: UpSource)
-    func didChangeGpsSource(from oldValue: PositionSource, to newValue: PositionSource)
+    func settingsDidChange()
 }
 
 class Settings {
@@ -48,22 +51,34 @@ class Settings {
     static var defaultPositionSource: PositionSource { .real }
     static var defaultUpSource: UpSource { .customCourseUp }
     static var defaultMetersPerPixel: Double { 1.5 }
+    static var defaultLineWidthScale: Double { 2 }
+    static var defaultColorScheme: ColorScheme { .dark }
     static var defaultSimulatedAccuracy: SimulatedAccuracy { .good }
 
     // settings properties
     var positionSource = defaultPositionSource {
         didSet {
-            delegate?.didChangeGpsSource(from: oldValue, to: positionSource)
+            delegate?.settingsDidChange()
         }
     }
     var upSource = defaultUpSource {
         didSet {
-            delegate?.didChangeUpSource(from: oldValue, to: upSource)
+            delegate?.settingsDidChange()
         }
     }
     var metersPerPixel = defaultMetersPerPixel {
         didSet {
-            delegate?.didChangeMetersPerPixel(from: oldValue, to: metersPerPixel)
+            delegate?.settingsDidChange()
+        }
+    }
+    var lineWidthScale = defaultLineWidthScale {
+        didSet {
+            delegate?.settingsDidChange()
+        }
+    }
+    var colorScheme = defaultColorScheme {
+        didSet {
+            delegate?.settingsDidChange()
         }
     }
     var simulatedAccuracy = defaultSimulatedAccuracy
@@ -102,6 +117,30 @@ class Settings {
             metersPerPixel = 4
         } else {
             metersPerPixel = 0.67
+        }
+    }
+
+    func switchLineWidthScale() {
+        if lineWidthScale == 1 {
+            lineWidthScale = 2
+        } else if lineWidthScale == 2 {
+            lineWidthScale = 3
+        } else if lineWidthScale == 3 {
+            lineWidthScale = 4
+        } else if lineWidthScale == 4 {
+            lineWidthScale = 5
+        } else if lineWidthScale == 5 {
+            lineWidthScale = 6
+        } else {
+            lineWidthScale = 1
+        }
+    }
+
+    func switchColorScheme() {
+        if colorScheme == .dark {
+            colorScheme = .light
+        } else {
+            colorScheme = .dark
         }
     }
 }

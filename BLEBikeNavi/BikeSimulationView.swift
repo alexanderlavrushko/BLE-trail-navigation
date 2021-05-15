@@ -11,6 +11,7 @@ import CoreLocation
 struct BikeLine {
     var from: CGPoint
     var to: CGPoint
+    var width: UInt8
 }
 
 struct BikeCircle {

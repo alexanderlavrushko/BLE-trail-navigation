@@ -143,15 +143,7 @@ class ViewController: UIViewController {
 
 // MARK: - SettingsDelegate
 extension ViewController: SettingsDelegate {
-    func didChangeMetersPerPixel(from oldValue: Double, to newValue: Double) {
-        scheduleBikeRedraw()
-    }
-
-    func didChangeUpSource(from oldValue: UpSource, to newValue: UpSource) {
-        scheduleBikeRedraw()
-    }
-
-    func didChangeGpsSource(from oldValue: PositionSource, to newValue: PositionSource) {
+    func settingsDidChange() {
         scheduleBikeRedraw()
     }
 }
@@ -245,6 +237,7 @@ private extension ViewController {
         let metersPerPixel = Settings.instance?.metersPerPixel ?? Settings.defaultMetersPerPixel
         let upSource = Settings.instance?.upSource ?? Settings.defaultUpSource
         let simulatedAccuracy = Settings.instance?.simulatedAccuracy ?? Settings.defaultSimulatedAccuracy
+        let scale = Settings.instance?.lineWidthScale ?? Settings.defaultLineWidthScale
 
         var bikeCenter = MKMapPoint(mapView.convert(crosshairView.center, toCoordinateFrom: nil))//MKMapPoint(mapView.centerCoordinate)
         let defaultAccuracy = CLLocationAccuracy(simulatedAccuracy == .good ? 5 : 40)
@@ -339,7 +332,7 @@ private extension ViewController {
                 let toPointAsRect = MKMapRect(origin: toPoint, size: MKMapSize())
                 let fullRect = fromPointAsRect.union(toPointAsRect)
                 if bike.bikeRect.intersects(fullRect) {
-                    lines.append(BikeLine(from: bike.convertPoint(fromPoint), to: bike.convertPoint(toPoint)))
+                    lines.append(BikeLine(from: bike.convertPoint(fromPoint), to: bike.convertPoint(toPoint), width: UInt8(2 * scale)))
                 }
             }
             if lines.isEmpty {
@@ -350,7 +343,7 @@ private extension ViewController {
                 }
                 if let closestCoordinate = closestCoordinate {
                     let toPoint = MKMapPoint(closestCoordinate)
-                    lineToClosestPoint = BikeLine(from: bike.convertPoint(bikeCenter), to: bike.convertPoint(toPoint))
+                    lineToClosestPoint = BikeLine(from: bike.convertPoint(bikeCenter), to: bike.convertPoint(toPoint), width: 1)
                 }
             }
         }
@@ -359,26 +352,34 @@ private extension ViewController {
         var trianglesHeading = [BikeTriangle]()
         let headingLock = upSource == .customCourseUp || upSource == .systemCourseUp
         if headingLock {
+            let smallValue = Double(0.01)
+            let horizontal = CGFloat(scale * Double(2.5 + smallValue))
+            let forward = CGFloat(scale * Double(4 + smallValue))
+            let back = CGFloat(scale * Double(1 + smallValue))
             let c = screenCenter
-            let pointLeft = CGPoint(x: c.x - 5, y: c.y + 5)
-            let pointRight = CGPoint(x: c.x + 5, y: c.y + 5)
-            let pointForward = CGPoint(x: c.x, y: c.y - 8)
-            let pointBack = CGPoint(x: c.x, y: c.y + 2)
-            linesHeading.append(BikeLine(from: pointLeft, to: pointForward))
-            linesHeading.append(BikeLine(from: pointForward, to: pointRight))
-            linesHeading.append(BikeLine(from: pointRight, to: pointBack))
-            linesHeading.append(BikeLine(from: pointBack, to: pointLeft))
+            let pointLeft = CGPoint(x: c.x - horizontal, y: c.y + horizontal)
+            let pointRight = CGPoint(x: c.x + horizontal, y: c.y + horizontal)
+            let pointForward = CGPoint(x: c.x, y: c.y - forward)
+            let pointBack = CGPoint(x: c.x, y: c.y + back)
+            linesHeading.append(BikeLine(from: pointLeft, to: pointForward, width: 1))
+            linesHeading.append(BikeLine(from: pointForward, to: pointRight, width: 1))
+            linesHeading.append(BikeLine(from: pointRight, to: pointBack, width: 1))
+            linesHeading.append(BikeLine(from: pointBack, to: pointLeft, width: 1))
             trianglesHeading.append(BikeTriangle(p1: pointLeft, p2: pointForward, p3: pointBack))
             trianglesHeading.append(BikeTriangle(p1: pointForward, p2: pointRight, p3: pointBack))
         }
         else if let lastHeading = manager.heading?.trueHeading {
-            let pointLeft = MKMapPoint(locationWithBearing(bearingDegrees: lastHeading + 135, distanceMeters: 7 * bike.bikeMetersPerPixel, origin: bikeCenter.coordinate))
-            let pointRight = MKMapPoint(locationWithBearing(bearingDegrees: lastHeading - 135, distanceMeters: 7 * bike.bikeMetersPerPixel, origin: bikeCenter.coordinate))
-            let pointForward = MKMapPoint(locationWithBearing(bearingDegrees: lastHeading, distanceMeters: 7 * bike.bikeMetersPerPixel, origin: bikeCenter.coordinate))
-            let pointBack = MKMapPoint(locationWithBearing(bearingDegrees: lastHeading + 180, distanceMeters: 4 * bike.bikeMetersPerPixel, origin: bikeCenter.coordinate))
+            let smallValue = Double(0.01)
+            let horizontal = scale * Double(3.5 + smallValue)
+            let forward = scale * Double(3.5 + smallValue)
+            let back = scale * Double(2 + smallValue)
+            let pointLeft = MKMapPoint(locationWithBearing(bearingDegrees: lastHeading + 135, distanceMeters: horizontal * bike.bikeMetersPerPixel, origin: bikeCenter.coordinate))
+            let pointRight = MKMapPoint(locationWithBearing(bearingDegrees: lastHeading - 135, distanceMeters: horizontal * bike.bikeMetersPerPixel, origin: bikeCenter.coordinate))
+            let pointForward = MKMapPoint(locationWithBearing(bearingDegrees: lastHeading, distanceMeters: forward * bike.bikeMetersPerPixel, origin: bikeCenter.coordinate))
+            let pointBack = MKMapPoint(locationWithBearing(bearingDegrees: lastHeading + 180, distanceMeters: back * bike.bikeMetersPerPixel, origin: bikeCenter.coordinate))
             let points = [pointLeft, pointForward, pointRight, pointBack, pointLeft]
             for i in 1..<points.count {
-                linesHeading.append(BikeLine(from: bike.convertPoint(points[i - 1]), to: bike.convertPoint(points[i])))
+                linesHeading.append(BikeLine(from: bike.convertPoint(points[i - 1]), to: bike.convertPoint(points[i]), width: 1))
             }
             trianglesHeading.append(BikeTriangle(p1: bike.convertPoint(pointLeft),
                                                  p2: bike.convertPoint(pointForward),
@@ -398,8 +399,10 @@ private extension ViewController {
         var breadCrumbs = [BikeCircle]()
         if recentLocations.count > 0 {
             for i in 0..<recentLocations.count - 1 {
+                let smallValue = Double(0.01)
+                let radius = CGFloat(scale * Double(1 + smallValue))
                 let point = MKMapPoint(recentLocations[i].coordinate)
-                breadCrumbs.append(BikeCircle(center: bike.convertPoint(point), radius: 2))
+                breadCrumbs.append(BikeCircle(center: bike.convertPoint(point), radius: radius))
             }
         }
 
@@ -496,40 +499,48 @@ extension ViewController {
         guard let bikeAccessory = BLEBikeAccessory.instance else {
             return
         }
-        bikeAccessory.newFrame(color: BikeColor(r: 0, g: 0, b: 0))
+        let colorScheme = Settings.instance?.colorScheme ?? Settings.defaultColorScheme
+        let color = BikeColorScheme(colorScheme)
+
+        bikeAccessory.newFrame(color: color.background)
         lines.forEach { (line) in
             let from = BikePoint(x: line.from.x.safeInt16, y: line.from.y.safeInt16)
             let to = BikePoint(x: line.to.x.safeInt16, y: line.to.y.safeInt16)
-            bikeAccessory.drawLine(from: from, to: to, color: BikeColor(r: 200, g: 100, b: 0), width: 4)
+            bikeAccessory.drawLine(from: from, to: to, color: color.route, width: line.width)
         }
         for i in 0..<breadCrumbs.count {
-            let fade = 20 * (breadCrumbs.count - i - 1)
-            let intensity = UInt8(255 - min(150, fade))
+            let intensity = { () -> Double in
+                let intensityMin = Double(0.58)
+                let intensityMax = Double(1)
+                let fade = 0.08 * Double(breadCrumbs.count - i - 1)
+                return max(intensityMin, intensityMax - fade)
+            }()
             let circle = breadCrumbs[i]
-            bikeAccessory.fillCircle(center: BikePoint(x: circle.center.x.safeInt16, y: circle.center.y.safeInt16), radius: UInt8(circle.radius), color: BikeColor(r: 0, g: intensity, b: 0))
+            let pointColor = color.recentPoints.multipliedBy(intensity)
+            bikeAccessory.fillCircle(center: BikePoint(x: circle.center.x.safeInt16, y: circle.center.y.safeInt16), radius: UInt8(circle.radius), color: pointColor)
         }
         let bikeCenter = BikePoint(x: center.center.x.safeInt16, y: center.center.y.safeInt16)
         if let lineToClosestPoint = lineToClosestPoint {
             let from = bikeCenter
             let to = BikePoint(x: lineToClosestPoint.to.x.safeInt16, y: lineToClosestPoint.to.y.safeInt16)
-            bikeAccessory.drawLine(from: from, to: to, color: BikeColor(r: 100, g: 100, b: 100), width: 1)
+            bikeAccessory.drawLine(from: from, to: to, color: color.lineToClosestPoint, width: lineToClosestPoint.width)
         }
         if accuracy.radius < CGFloat(UInt8.max),
            accuracy.radius > 10 {
-            bikeAccessory.drawCircle(center: BikePoint(x: accuracy.center.x.safeInt16, y: accuracy.center.y.safeInt16), radius: UInt8(accuracy.radius), color: BikeColor(r: 70, g: 70, b: 70))
+            bikeAccessory.drawCircle(center: BikePoint(x: accuracy.center.x.safeInt16, y: accuracy.center.y.safeInt16), radius: UInt8(accuracy.radius), color: color.accuracyCircle)
         }
         trianglesHeading.forEach { (triangle) in
             let p1 = BikePoint(x: triangle.p1.x.safeInt16, y: triangle.p1.y.safeInt16)
             let p2 = BikePoint(x: triangle.p2.x.safeInt16, y: triangle.p2.y.safeInt16)
             let p3 = BikePoint(x: triangle.p3.x.safeInt16, y: triangle.p3.y.safeInt16)
-            bikeAccessory.fillTriangle(p1, p2, p3, color: BikeColor(r: 255, g: 255, b: 255))
+            bikeAccessory.fillTriangle(p1, p2, p3, color: color.positionIndicator)
         }
         linesHeading.forEach { (line) in
             let from = BikePoint(x: line.from.x.safeInt16, y: line.from.y.safeInt16)
             let to = BikePoint(x: line.to.x.safeInt16, y: line.to.y.safeInt16)
-            bikeAccessory.drawLine(from: from, to: to, color: BikeColor(r: 255, g: 255, b: 255), width: 1)
+            bikeAccessory.drawLine(from: from, to: to, color: color.positionIndicator, width: line.width)
         }
-//        bikeAccessory.drawCircle(center: bikeCenter, radius: UInt8(center.radius), color: BikeColor(r: 255, g: 255, b: 255))
+//        bikeAccessory.drawCircle(center: bikeCenter, radius: UInt8(center.radius), color: color.positionIndicator)
         bikeAccessory.showCurrentFrame()
     }
 }

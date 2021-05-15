@@ -57,9 +57,27 @@ struct BikeColor {
         var color565 = self.color565
         return Data(bytes: &color565, count: MemoryLayout<UInt16>.size)
     }
+
+    func multipliedBy(_ intensity: Double) -> BikeColor {
+        let newR = (Double(r) * intensity).safeUInt8
+        let newG = (Double(g) * intensity).safeUInt8
+        let newB = (Double(b) * intensity).safeUInt8
+        return BikeColor(r: newR, g: newG, b: newB)
+    }
 }
 
 struct BikeInfo {
     let screenWidth: Int16
     let screenHeight: Int16
+}
+
+private extension Double {
+    var safeUInt8: UInt8 {
+        if self < Double(UInt8.min) {
+            return UInt8.min
+        } else if self > Double(UInt8.max) {
+            return UInt8.max
+        }
+        return UInt8(self)
+    }
 }
