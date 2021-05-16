@@ -47,6 +47,7 @@ void TFT_TTGO::SendImage(int16_t xStart,
 
 void TFT_TTGO::EnterSleepMode()
 {
+    m_tft.fillScreen(TFT_BLACK); // avoid short blink during next wake up, fill the screen now
     digitalWrite(TFT_BL, LOW); // turn backlight off
     
     m_tft.writecommand(TFT_DISPOFF);
