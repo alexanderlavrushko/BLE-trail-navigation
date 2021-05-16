@@ -4,6 +4,7 @@
 #include <BLE2902.h>
 #include <Adafruit_GFX.h> // available in Arduino libraries, or https://github.com/adafruit/Adafruit-GFX-Library
 #include <SPI.h>
+#include <Button2.h> // available in Arduino libraries, or https://github.com/LennartHennigs/Button2
 
 // -----------------
 // Display selection
@@ -61,6 +62,29 @@ static bool g_needToHandleConnectionState = true;
 static uint32_t g_lastActivityTime = 0;
 static bool g_isWriteDataUpdated = false;
 static std::string g_writeData;
+
+// --------
+// Buttons
+// --------
+#define TTGO_LEFT_BUTTON 0
+#define GPIO_NUM_TTGO_LEFT_BUTTON GPIO_NUM_0
+
+//#define TTGO_RIGHT_BUTTON 35
+//#define GPIO_NUM_TTGO_RIGHT_BUTTON GPIO_NUM_35
+
+#define BUTTON_DEEP_SLEEP TTGO_LEFT_BUTTON
+#define GPIO_NUM_WAKEUP GPIO_NUM_TTGO_LEFT_BUTTON
+
+class Button2Extended : public Button2
+{
+public:
+    Button2Extended(byte pin) : Button2(pin) {}
+    unsigned long currentlyPressedDuration()
+    {
+        return (state == pressed ? millis() - down_ms: 0);
+    }
+};
+Button2Extended g_btnDeepSleep(BUTTON_DEEP_SLEEP);
 
 // --------
 // Types
@@ -198,13 +222,36 @@ void setup()
         pAdvertising->setMinPreferred(0x12);
     }
     BLEDevice::startAdvertising();
-    
+
+    // setup deep sleep button
+    g_btnDeepSleep.setLongClickTime(500);
+    g_btnDeepSleep.setLongClickHandler([](Button2& b) {
+        g_display.EnterSleepMode();
+
+        esp_sleep_enable_ext0_wakeup(GPIO_NUM_WAKEUP, 0);
+        delay(200);
+        esp_deep_sleep_start();
+    });
+
     Serial.println("BLEBikeNavi setup() finished");
     Serial.println("Advertising...");
 }
 
 void loop()
 {
+    // handle deep sleep button
+    g_btnDeepSleep.loop();
+    if (g_btnDeepSleep.currentlyPressedDuration() >= g_btnDeepSleep.getLongClickTime())
+    {
+        g_pGfx->fillRect(0, 0, CANVAS_WIDTH, 20, COLOR_BLACK);
+        g_pGfx->setCursor(0, 0);
+        g_pGfx->setTextColor(COLOR_WHITE);
+        g_pGfx->setTextSize(2);
+        g_pGfx->println("SLEEP");
+        g_display.SendImage(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, g_pGfx->getBuffer());
+    }
+
+    // handle commands received over BLE
     if (g_centralConnected)
     {
         if (g_needToHandleConnectionState)

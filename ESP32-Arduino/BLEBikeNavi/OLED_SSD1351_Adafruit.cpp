@@ -54,3 +54,8 @@ void OLED_SSD1351_Adafruit::SendImage(int16_t xStart,
     uint16_t* data2 = const_cast<uint16_t*>(data);
     m_driver->drawRGBBitmap(xStart, yStart, data2, height, height);
 }
+
+void OLED_SSD1351_Adafruit::EnterSleepMode()
+{
+    m_driver->enableDisplay(false);
+}

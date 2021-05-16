@@ -29,7 +29,8 @@ ESP32:
 1. ESP32 TTGO T-Display with embedded display 135x240 TFT - [how to enable](https://github.com/alexanderlavrushko/BLE-bike-navigation#ttgo-t-display)
 
 ### Required Arduino libraries for ESP32
-* [Adafruit-GFX-Library](https://github.com/adafruit/Adafruit-GFX-Library)
+* [Adafruit-GFX-Library](https://github.com/adafruit/Adafruit-GFX-Library) by Adafruit
+* [Button2](https://github.com/LennartHennigs/Button2) by Lennart Hennigs
 * [Adafruit-SSD1351-library](https://github.com/adafruit/Adafruit-SSD1351-library) (only for SSD1351 display)
 * [TFT_eSPI adjusted by TTGO](https://github.com/Xinyuan-LilyGO/TTGO-T-Display) (only for TTGO T-Display)
 

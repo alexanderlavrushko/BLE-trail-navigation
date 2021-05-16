@@ -26,6 +26,7 @@ public:
                    int16_t width,
                    int16_t height,
                    const uint16_t* data) override;
+    void EnterSleepMode() override;
 
 private:
     std::unique_ptr<Adafruit_SSD1351> m_driver;

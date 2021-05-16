@@ -16,6 +16,7 @@ public:
                            int16_t width,
                            int16_t height,
                            const uint16_t* data) = 0;
+    virtual void EnterSleepMode() = 0;
 };
 
 #endif // IDISPLAY_H_INCLUDED
