@@ -20,7 +20,6 @@ class ViewController: UIViewController {
     private var currentCoordinates = [CLLocationCoordinate2D]()
     private var currentLine = MKPolyline()
     private let coordinatesKey = "currentCoordinates"
-    private var settings = Settings()
     private let redrawScheduler = TaskScheduler(minTimeBetweenTasks: 0.2)
     private var recentLocations = [CLLocation]()
     private var observers = [NSObjectProtocol]()

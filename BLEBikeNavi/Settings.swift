@@ -7,19 +7,19 @@
 
 import Foundation
 
-enum PositionSource {
+enum PositionSource: String {
     case real
     case mapViewCenter
 }
 
-enum UpSource {
+enum UpSource: String {
     case northUp
     case systemCourseUp
     case customCourseUp
     case headingUp
 }
 
-enum ColorScheme {
+enum ColorScheme: String {
     case dark
     case light
 }
@@ -31,6 +31,39 @@ enum SimulatedAccuracy {
 
 protocol SettingsDelegate: AnyObject {
     func settingsDidChange()
+}
+
+enum StorageKey: String {
+    case upSource
+    case metersPerPixel
+    case lineWidthScale
+    case colorScheme
+
+    var key: String {
+        "settings.\(rawValue)"
+    }
+
+    var exists: Bool {
+        UserDefaults.standard.object(forKey: key) != nil
+    }
+
+    func readString() -> String? {
+        exists ? UserDefaults.standard.string(forKey: key) : nil
+    }
+
+    func readDouble() -> Double? {
+        exists ? UserDefaults.standard.double(forKey: key) : nil
+    }
+
+    func writeString(_ value: String) {
+        UserDefaults.standard.set(value, forKey: key)
+        UserDefaults.standard.synchronize()
+    }
+
+    func writeDouble(_ value: Double) {
+        UserDefaults.standard.set(value, forKey: key)
+        UserDefaults.standard.synchronize()
+    }
 }
 
 class Settings {
@@ -63,27 +96,46 @@ class Settings {
     }
     var upSource = defaultUpSource {
         didSet {
+            StorageKey.upSource.writeString(upSource.rawValue)
             delegate?.settingsDidChange()
         }
     }
     var metersPerPixel = defaultMetersPerPixel {
         didSet {
+            StorageKey.metersPerPixel.writeDouble(metersPerPixel)
             delegate?.settingsDidChange()
         }
     }
     var lineWidthScale = defaultLineWidthScale {
         didSet {
+            StorageKey.lineWidthScale.writeDouble(lineWidthScale)
             delegate?.settingsDidChange()
         }
     }
     var colorScheme = defaultColorScheme {
         didSet {
+            StorageKey.colorScheme.writeString(colorScheme.rawValue)
             delegate?.settingsDidChange()
         }
     }
     var simulatedAccuracy = defaultSimulatedAccuracy
 
     // methods
+    private init() {
+        if let storedUpSource = UpSource(rawValue: StorageKey.upSource.readString() ?? "") {
+            upSource = storedUpSource
+        }
+        if let storedMetersPerPixel = StorageKey.metersPerPixel.readDouble() {
+            metersPerPixel = storedMetersPerPixel
+        }
+        if let storedLineWidthScale = StorageKey.lineWidthScale.readDouble() {
+            lineWidthScale = storedLineWidthScale
+        }
+        if let storedColorScheme = ColorScheme(rawValue: StorageKey.colorScheme.readString() ?? "") {
+            colorScheme = storedColorScheme
+        }
+    }
+
     func switchPositionSource() {
         if positionSource == .real {
             positionSource = .mapViewCenter
