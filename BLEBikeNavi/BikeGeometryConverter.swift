@@ -10,23 +10,18 @@ import CoreGraphics
 import MapKit
 
 class BikeGeometryConverter {
-    let bikeWidthPixels: Double
-    let bikeHeightPixels: Double
     let bikeMetersPerPixel: Double
     let bikeScreenCenter: CGPoint
+    let bikeScreenRect: CGRect
     let mapCenter: MKMapPoint
     let mapPointsPerMeter: Double
     let bikePointsPerPixel: Double
     let bikePixelsPerPoint: Double
-    let bikeWidthMapPoints: Double
-    let bikeHeightMapPoints: Double
     let bikeTopLeft: MKMapPoint
-    let bikeRect: MKMapRect
     let forwardAngle: CLLocationDegrees
 
     init(screenWidth: Double, screenHeight: Double, metersPerPixel: Double, screenCenter: CGPoint, mapCenter: MKMapPoint, forwardAngle: CLLocationDegrees) {
-        bikeWidthPixels = screenWidth
-        bikeHeightPixels = screenHeight
+        bikeScreenRect = CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight)
         bikeMetersPerPixel = metersPerPixel
         bikeScreenCenter = screenCenter
         self.mapCenter = mapCenter
@@ -34,11 +29,8 @@ class BikeGeometryConverter {
         mapPointsPerMeter = MKMapPointsPerMeterAtLatitude(mapCenter.coordinate.latitude)
         bikePointsPerPixel = bikeMetersPerPixel * mapPointsPerMeter
         bikePixelsPerPoint = 1 / bikePointsPerPixel
-        bikeWidthMapPoints = bikeWidthPixels * bikePointsPerPixel
-        bikeHeightMapPoints = bikeHeightPixels * bikePointsPerPixel
         bikeTopLeft = MKMapPoint(x: mapCenter.x - bikePointsPerPixel * Double(bikeScreenCenter.x),
                                  y: mapCenter.y - bikePointsPerPixel * Double(bikeScreenCenter.y))
-        bikeRect = MKMapRect(origin: bikeTopLeft, size: MKMapSize(width: bikeWidthMapPoints, height: bikeHeightMapPoints))
         self.forwardAngle = forwardAngle
     }
 

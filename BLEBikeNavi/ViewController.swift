@@ -325,13 +325,13 @@ private extension ViewController {
         var lineToClosestPoint: BikeLine? = nil
         if currentCoordinates.count > 1 {
             for i in 1..<currentCoordinates.count {
-                let fromPoint = MKMapPoint(currentCoordinates[i - 1])
-                let toPoint = MKMapPoint(currentCoordinates[i])
-                let fromPointAsRect = MKMapRect(origin: fromPoint, size: MKMapSize())
-                let toPointAsRect = MKMapRect(origin: toPoint, size: MKMapSize())
+                let fromPoint = bike.convertPoint(MKMapPoint(currentCoordinates[i - 1]))
+                let toPoint = bike.convertPoint(MKMapPoint(currentCoordinates[i]))
+                let fromPointAsRect = CGRect(origin: fromPoint, size: CGSize())
+                let toPointAsRect = CGRect(origin: toPoint, size: CGSize())
                 let fullRect = fromPointAsRect.union(toPointAsRect)
-                if bike.bikeRect.intersects(fullRect) {
-                    lines.append(BikeLine(from: bike.convertPoint(fromPoint), to: bike.convertPoint(toPoint), width: UInt8(2 * scale)))
+                if bike.bikeScreenRect.intersects(fullRect) {
+                    lines.append(BikeLine(from: fromPoint, to: toPoint, width: UInt8(2 * scale)))
                 }
             }
             if lines.isEmpty {
@@ -389,8 +389,8 @@ private extension ViewController {
         }
 
         let bikeAccuracy = { () -> BikeCircle in
-            let accuracyPixels = currentLocation.horizontalAccuracy / bike.bikeMetersPerPixel
-            let maxAllowedAccuracy = min(bike.bikeWidthPixels, bike.bikeHeightPixels) * 0.44
+            let accuracyPixels = CGFloat(currentLocation.horizontalAccuracy / bike.bikeMetersPerPixel)
+            let maxAllowedAccuracy = min(bike.bikeScreenRect.width, bike.bikeScreenRect.height) * 0.44
             let radius = accuracyPixels < maxAllowedAccuracy ? accuracyPixels : maxAllowedAccuracy
             return BikeCircle(center: screenCenter, radius: CGFloat(radius))
         }()
