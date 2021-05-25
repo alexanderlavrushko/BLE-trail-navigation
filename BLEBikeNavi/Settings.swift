@@ -31,6 +31,7 @@ enum SimulatedAccuracy {
 
 protocol SettingsDelegate: AnyObject {
     func settingsDidChange()
+    func positionSourceDidChange()
 }
 
 enum StorageKey: String {
@@ -91,7 +92,7 @@ class Settings {
     // settings properties
     var positionSource = defaultPositionSource {
         didSet {
-            delegate?.settingsDidChange()
+            delegate?.positionSourceDidChange()
         }
     }
     var upSource = defaultUpSource {

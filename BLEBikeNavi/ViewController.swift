@@ -23,6 +23,7 @@ class ViewController: UIViewController {
     private let redrawScheduler = TaskScheduler(minTimeBetweenTasks: 0.2)
     private var recentLocations = [CLLocation]()
     private var observers = [NSObjectProtocol]()
+    private var simulationTimer: Timer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -144,6 +145,18 @@ class ViewController: UIViewController {
 extension ViewController: SettingsDelegate {
     func settingsDidChange() {
         scheduleBikeRedraw()
+    }
+
+    func positionSourceDidChange() {
+        simulationTimer?.invalidate()
+        simulationTimer = nil
+        guard Settings.instance?.positionSource == .mapViewCenter else { return }
+
+        simulationTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self](timer) in
+            guard UIApplication.shared.applicationState == .active else { return }
+            guard Settings.instance?.positionSource == .mapViewCenter else { return }
+            self?.scheduleBikeRedraw()
+        }
     }
 }
 
@@ -478,6 +491,7 @@ extension ViewController : CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard Settings.instance?.positionSource == .real else { return }
         scheduleBikeRedraw()
     }
 
