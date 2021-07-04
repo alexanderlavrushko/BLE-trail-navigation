@@ -413,8 +413,11 @@ private extension ViewController {
             for i in 0..<recentLocations.count - 1 {
                 let smallValue = Double(0.01)
                 let radius = CGFloat(scale * Double(1 + smallValue))
-                let point = MKMapPoint(recentLocations[i].coordinate)
-                breadCrumbs.append(BikeCircle(center: bike.convertPoint(point), radius: radius))
+                let point = bike.convertPoint(MKMapPoint(recentLocations[i].coordinate))
+                let pointAsRect = CGRect(origin: point, size: CGSize())
+                if bike.bikeScreenRect.intersects(pointAsRect) {
+                    breadCrumbs.append(BikeCircle(center: point, radius: radius))
+                }
             }
         }
 
