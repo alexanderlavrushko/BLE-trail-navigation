@@ -278,7 +278,7 @@ private extension ViewController {
 
         var customCourse = CLLocationDirection(0)
         let courseCount = 3 // number of recent locations which take part in course computing
-        let skipLastCount = 1 // skip most recent coordinates, they can be too close to the current location
+        let skipLastCount = 0 // skip most recent coordinates, they can be too close to the current location
         let deltaWeightPerStep = Double(2)
         let accuracyKoeficient = { () -> Double in
             let minValue = Double(2)
