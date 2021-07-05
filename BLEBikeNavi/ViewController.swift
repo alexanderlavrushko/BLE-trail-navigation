@@ -317,16 +317,9 @@ private extension ViewController {
         }()
 
         let bikeInfo = BLEBikeAccessory.instance?.info ?? BikeInfo(screenWidth: 128, screenHeight: 128)
-        let screenCenter = { () -> CGPoint in
-            if Double(bikeInfo.screenHeight) / Double(bikeInfo.screenWidth) > 1.3 {
-                return CGPoint(x: Int(bikeInfo.screenWidth / 2),
-                               y: Int(Double(bikeInfo.screenHeight) * 0.67))
-            } else {
-                let minSide = Double(min(bikeInfo.screenWidth, bikeInfo.screenHeight))
-                return CGPoint(x: Int(bikeInfo.screenWidth / 2),
-                               y: Int(Double(bikeInfo.screenHeight) - minSide * 0.45))
-            }
-        }()
+        let screenCenter = CGPoint(x: Int(bikeInfo.screenWidth / 2),
+                                   y: Int(Double(bikeInfo.screenHeight) * 0.67))
+
         let bike = BikeGeometryConverter(screenWidth: Double(bikeInfo.screenWidth),
                                          screenHeight: Double(bikeInfo.screenHeight),
                                          metersPerPixel: metersPerPixel,
@@ -403,7 +396,7 @@ private extension ViewController {
 
         let bikeAccuracy = { () -> BikeCircle in
             let accuracyPixels = CGFloat(currentLocation.horizontalAccuracy / bike.bikeMetersPerPixel)
-            let maxAllowedAccuracy = min(bike.bikeScreenRect.width, bike.bikeScreenRect.height) * 0.44
+            let maxAllowedAccuracy = min(bike.bikeScreenRect.width, bike.bikeScreenRect.height) * 0.32
             let radius = accuracyPixels < maxAllowedAccuracy ? accuracyPixels : maxAllowedAccuracy
             return BikeCircle(center: screenCenter, radius: CGFloat(radius))
         }()
