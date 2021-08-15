@@ -5,6 +5,7 @@
 #include <Adafruit_GFX.h> // available in Arduino libraries, or https://github.com/adafruit/Adafruit-GFX-Library
 #include <SPI.h>
 #include <Button2.h> // available in Arduino libraries, or https://github.com/LennartHennigs/Button2
+#include "VoltageMeasurement.h"
 
 // -----------------
 // Display selection
@@ -69,7 +70,7 @@ static std::string g_writeData;
 #define TTGO_LEFT_BUTTON 0
 #define GPIO_NUM_TTGO_LEFT_BUTTON GPIO_NUM_0
 
-//#define TTGO_RIGHT_BUTTON 35
+#define TTGO_RIGHT_BUTTON 35
 //#define GPIO_NUM_TTGO_RIGHT_BUTTON GPIO_NUM_35
 
 #define BUTTON_DEEP_SLEEP TTGO_LEFT_BUTTON
@@ -85,6 +86,15 @@ public:
     }
 };
 Button2Extended g_btnDeepSleep(BUTTON_DEEP_SLEEP);
+
+// --------
+// Voltage measurement
+// --------
+#define VOLTAGE_ADC_ENABLE          14
+#define VOLTAGE_ADC_PIN             34
+static VoltageMeasurement g_voltage(VOLTAGE_ADC_PIN, VOLTAGE_ADC_ENABLE);
+static bool g_showVoltage = false;
+Button2 g_btn1(TTGO_RIGHT_BUTTON);
 
 // --------
 // Types
@@ -228,9 +238,22 @@ void setup()
     g_btnDeepSleep.setLongClickHandler([](Button2& b) {
         g_display.EnterSleepMode();
 
+        // without this the module won't wake up with button if powered from battery,
+        // especially if entered deep sleep when powered from USB
+        g_voltage.end();
+
         esp_sleep_enable_ext0_wakeup(GPIO_NUM_WAKEUP, 0);
         delay(200);
         esp_deep_sleep_start();
+    });
+
+    // setup voltage measurement
+    g_voltage.begin();
+    g_btn1.setPressedHandler([](Button2& b) {
+        g_showVoltage = true;
+    });
+    g_btn1.setReleasedHandler([](Button2& b) {
+        g_showVoltage = false;
     });
 
     Serial.println("BLEBikeNavi setup() finished");
@@ -248,6 +271,28 @@ void loop()
         g_pGfx->setTextColor(COLOR_WHITE);
         g_pGfx->setTextSize(2);
         g_pGfx->println("SLEEP");
+        g_display.SendImage(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, g_pGfx->getBuffer());
+    }
+
+    // handle voltage button
+    g_btn1.loop();
+    if (g_showVoltage)
+    {
+        static uint64_t voltageTimeStamp = 0;
+        static float voltage = 0;
+        if (millis() - voltageTimeStamp > 500)
+        {
+            voltageTimeStamp = millis();
+            voltage = g_voltage.measureVolts();
+        }
+        String voltageStr = String(voltage) + " V";
+        const int16_t textHeight = 20;
+        const int16_t yOffset = CANVAS_HEIGHT - textHeight;
+        g_pGfx->fillRect(0, yOffset, CANVAS_WIDTH, textHeight, COLOR_BLACK);
+        g_pGfx->setCursor(0, yOffset);
+        g_pGfx->setTextColor(COLOR_WHITE);
+        g_pGfx->setTextSize(2);
+        g_pGfx->println(voltageStr);
         g_display.SendImage(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT, g_pGfx->getBuffer());
     }
 
