@@ -15,14 +15,14 @@
 // OLED 128x128 RGB, Waveshare 14747, driver SSD1351
 // Requires library Adafruit SSD1351, available in Arduino libraries, or https://github.com/adafruit/Adafruit-SSD1351-library
 // Pins: DIN=23, CLK=18, CS=5, DC=17, RST=16, uses SPIClass(VSPI)
-#include "OLED_SSD1351_Adafruit.h"
-OLED_SSD1351_Adafruit selectedDisplay;
+//#include "OLED_SSD1351_Adafruit.h"
+//OLED_SSD1351_Adafruit selectedDisplay;
 
 // TTGO T-Display TFT 135x240
 // Requires library TFT_eSPI from here: https://github.com/Xinyuan-LilyGO/TTGO-T-Display
 // (copy TFT_eSPI to Arduino/libraries)
-//#include "TFT_TTGO.h"
-//TFT_TTGO selectedDisplay;
+#include "TFT_TTGO.h"
+TFT_TTGO selectedDisplay;
 
 // --------
 // Constants
