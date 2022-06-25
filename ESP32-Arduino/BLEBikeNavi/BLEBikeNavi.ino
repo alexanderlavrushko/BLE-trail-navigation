@@ -4,7 +4,7 @@
 #include <BLE2902.h>
 #include <Adafruit_GFX.h> // available in Arduino libraries, or https://github.com/adafruit/Adafruit-GFX-Library
 #include <SPI.h>
-#include <Button2.h> // available in Arduino libraries, or https://github.com/LennartHennigs/Button2
+#include <Button2.h> // version 2.0.3, available in Arduino libraries, or https://github.com/LennartHennigs/Button2
 #include "VoltageMeasurement.h"
 
 // -----------------
@@ -78,16 +78,8 @@ static std::string g_writeData;
 #define BUTTON_DEEP_SLEEP TTGO_LEFT_BUTTON
 #define GPIO_NUM_WAKEUP GPIO_NUM_TTGO_LEFT_BUTTON
 
-class Button2Extended : public Button2
-{
-public:
-    Button2Extended(byte pin) : Button2(pin) {}
-    unsigned long currentlyPressedDuration()
-    {
-        return (state == _pressedState ? millis() - down_ms: 0);
-    }
-};
-Button2Extended g_btnDeepSleep(BUTTON_DEEP_SLEEP);
+Button2 g_btnDeepSleep(BUTTON_DEEP_SLEEP);
+bool g_isDeepSleepRequested = false;
 
 // --------
 // Voltage measurement
@@ -237,6 +229,9 @@ void setup()
 
     // setup deep sleep button
     g_btnDeepSleep.setLongClickTime(500);
+    g_btnDeepSleep.setLongClickDetectedHandler([](Button2& b) {
+        g_isDeepSleepRequested = true;
+    });
     g_btnDeepSleep.setLongClickHandler([](Button2& b) {
         g_display.EnterSleepMode();
 
@@ -269,7 +264,7 @@ void loop()
 {
     // handle deep sleep button
     g_btnDeepSleep.loop();
-    if (g_btnDeepSleep.currentlyPressedDuration() >= g_btnDeepSleep.getLongClickTime())
+    if (g_isDeepSleepRequested)
     {
         g_pGfx->fillRect(0, 0, CANVAS_WIDTH, 20, COLOR_BLACK);
         g_pGfx->setCursor(0, 0);
